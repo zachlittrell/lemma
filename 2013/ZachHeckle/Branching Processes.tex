@@ -1,0 +1,297 @@
+% Stuff
+\documentclass{beamer}
+\usetheme{Beaver}
+\title{Branching Processes and Fractals}
+\subtitle{The Death of a Name}
+\author{Zach Heckle}
+\usepackage{amsmath}
+\begin{document}
+
+% Title Page
+\begin{frame}
+\titlepage
+\end{frame}
+
+% Some Stuff
+\begin{frame}{A Little About Probability}
+\begin{enumerate}
+\item Let $\xi$ be a r.v. $\mathbb{P}(\xi = k)$ is the probability that $\xi$ is $k$
+\pause
+\item An integer valued r.v. takes on a random integer value
+\pause
+\item All probabilities in the sample space sum to 1
+\pause
+\item Define the expected value of $\xi$ as follows: $\mathbb{E}[\xi] = \sum_{i=1}^{\infty} i\mathbb{P}(\xi = i)$
+\end{enumerate}
+\end{frame}
+
+% The Probability Generating Function
+\begin{frame}{The Probability Generating Function}
+Let $X$ be an integer valued r.v. The P.G.F. is defined as such on $[0,1]$:
+
+$$G_X(s) = \mathbb{E}[s^X] = \sum_{i=0}^{\infty} \mathbb{P}(X=i)s^i $$
+
+\pause
+Properties of $G_X(s)$:
+\begin{enumerate}
+\pause
+\item $\lim_{s \to 0} G_X(s) = G_X(0) = \mathbb{P}(X=0)$ and $G_X(1) = 1$
+\pause
+\item $G_X'(1) = \sum_{i=1}^{\infty} i\mathbb{P}(X=i) = \mathbb{E}[X] < \infty$ for our purposes today
+\pause
+\item $G_X$ is monotonic
+\pause
+\item $G_X$ is convex (that is, $G''(s) \ge 0$ $\forall s \in [0,1])$
+\pause
+\item The convexity of $G_X$ tells us $G'(s)$ is increasing
+\end{enumerate}
+\end{frame}
+
+% The Moment Generating Function
+\begin{frame}{The Probability Generating Function}
+\begin{corollary}
+Let $X_1, X_2, ...$ be i.i.d. copies of $X$ with P.G.F. $G_X$, and let $N$ be a r.v. taking on an integer value independent from $X$. Then $G_{X_1 + X_2 + ... + X_N}(s) = G_N(G_X(s))$.
+\end{corollary}
+\end{frame}
+
+\begin{frame}{The Probability Generating Function}
+\begin{proof}
+\begin{align*}
+G_{X_1 + ... + X_N}(s) &= \mathbb{E}[s^{X_1 + ... + X_N}] \\
+&= \sum_{i=0}^{\infty} \mathbb{E}[s^{X_1 + ... + X_N} | N = i] \mathbb{P}(N = i) \\
+&= \sum_{i=0}^{\infty} \mathbb{E}[s^{X_1 + ... + X_i} | N = i] \mathbb{P}(N = i) \\
+&= \sum_{i=0}^{\infty} \mathbb{E}[s^{X_1 + ... + X_i}] \mathbb{P}(N = i) \\
+&= \sum_{i=0}^{\infty} (G_X(s))^i \mathbb{P}(N = i) \\
+&= \mathbb{E}[(G_X(s))^N] = G_N(G_X(s))
+\end{align*}
+\end{proof}
+\end{frame}
+
+\begin{frame}{A Direct Consequence}
+Define $G_{X_1 + ... + X_n}(s) = G_n(s)$
+
+\pause
+\vspace{10mm}
+\begin{corollary}
+$G_n(s) = G_{n-1}(G(s))$
+\end{corollary}
+\end{frame}
+
+% Binomal R.V.
+\begin{frame}{Binomial Random Variables}{Coins, Coins, Coins}
+An intuitive description of a binomal r.v. can be demonstrated by flipping an unfair coin, and counting the number of heads, or successes. Let $\xi \sim Binom(n,p)$ and take $k \le n$.
+\pause
+$$\mathbb{P}(\xi = k) = {n \choose k}p^k(1-p)^{n-k}$$
+
+\pause
+We can find $\mathbb{E}[\xi] = np$.
+
+\vspace{5 mm}
+\pause
+Also note that we call $\xi \sim Binom(1,p)$ Bernoulli.
+\end{frame}
+
+% Galton-Watson Process
+\begin{frame}{The Galton-Watson Process}
+Let $X$ be an integer valued r.v. and assume that $0 < \mathbb{P}(X = 0) < 1$. Let $\zeta_i^k, i, k = 1, 2, ...$ be i.i.d. copies of $X$. Define a sequence $Z = (Z_n)_{n \ge 1}$ of r.v. by:
+
+$$Z_0 = 1, Z_{n+1} = \zeta_1^{n+1} + ... + \zeta_{Z_n}^{n+1} , n \ge 0$$
+
+This is often called an $Z$-process.
+
+\vspace{10 mm}
+\pause
+Consider a situation in which an individual has some number of offspring (which we will call the individuals of generation 1), and those offspring also produce some number of offspring (generation 2). This process repeats until all the individuals produce no children.
+\end{frame}
+
+% Theorem 2.1
+\begin{frame}{Fixed Points and Extinction}
+\begin{theorem}
+Let $Z = (Z_n)_{n \ge 0}$ be an $Z$-process. Let $\eta = \mathbb{P}(Z_n = 0$ for some $n)$ be the probability of ultimate extinction of said process. Then $\eta$ is the minimal fixed point of  $G$  in $[0,1]$.
+\end{theorem}
+
+\vspace{10mm}
+Note $\eta = \lim_{n \to \infty} \mathbb{P}(Z_n = 0)$
+
+\vspace{10 mm}
+\pause
+\begin{theorem}
+$\eta = 1 \iff \mathbb{E}[X] \le 1$
+\end{theorem}
+\end{frame}
+
+% Examples
+\begin{frame}{Some Examples}
+\begin{enumerate}
+\item If $\xi \sim Binom(n,p)$, when does $Z$ become extinct?
+
+\vspace{10 mm}
+\pause
+\item If $Y = 0,2$ and $\mathbb{P}(Y = 0) = 1 - p$ and $\mathbb{P}(Y = 2) = p$, when does this process become extinct?
+\end{enumerate}
+\end{frame}
+
+% Trees
+\begin{frame}{A Restatement}
+\begin{theorem}
+$\mathbb{P}(Z$ contains an infinite tree with root $Z_0) = 0$ $\iff \mathbb{E}[X] \le 1$
+\end{theorem}
+\end{frame}
+
+% Binary Splittings
+\begin{frame}{Binary Splittings}
+\begin{definition}
+The process $Z = (Z_n)$ has an infinite binary splitting if it contains a binary tree as a subgraph of $Z$ with the same root.
+\end{definition}
+
+\pause
+\vspace{10 mm}
+\begin{theorem}
+Let $\tau$ be the probability that the $Z$-process has a binary splitting. Then $1 - \tau$ is the smallest fixed point of $G(s) + (1-s)G'(s)$ in $[0,1]$.
+\end{theorem}
+\end{frame}
+
+% Example
+\begin{frame}{A Short Example}
+Let $\tau(p)$ be the binary splitting probability for an $Z$-process with offspring distribution given by $\mathbb{P}(\xi = 1) = 1 - p$ and $\mathbb{P}(\xi = 3) = p$.
+
+\vspace{10 mm}
+What can we say about the probability of an infinite binary tree existing?
+\end{frame}
+
+% N-ary Splitting
+\begin{frame}{A Cool Theorem}
+\begin{theorem}
+Let $\tau(N)$ be the probability that the $Z$-process $Z$ has an $N$-ary splitting. Then $1 - \tau(N)$ is the smallest fixed point in [0,1] of $\sum_{j=0}^{N-1} (1-s)^j \frac{G^{(j)}(s)}{j!}$.
+\end{theorem}
+
+\pause
+\vspace{10 mm}
+When $N = 2$ we have the previous result.
+
+\vspace{10 mm}
+\pause
+\begin{proof}
+The proof is left as an exercise for the audience.
+\end{proof}
+\end{frame}
+
+% The Fractal-ness
+\begin{frame}{Fractal Percolations}{Our Model}
+Fix $N \in \mathbb{N}$ and some $p \in [0,1]$. Let $A_0 = [0,1]^2$ and let $S_{i,j} = [\frac{i-1}{N}, \frac{i}{N}] \times [\frac{j-1}{N}, \frac{j}{N}]$, for some $1 \le i$ and $j \le N$. Let $\varepsilon_{i,j} \sim Binom(1,p)$. When $\varepsilon_{i,j} = 1$ then it is said to be kept and write $A_1 = \bigcup_{\varepsilon_{i,j} = 1} S_{i,j}$.
+
+\pause
+\vspace{10 mm}
+Let $S_{i,j}^n = [\frac{i-1}{N^n}, \frac{i}{N^n}] \times [\frac{j-1}{N^n}, \frac{j}{N^n}]$ for some $1 \le i$ and $j \le N^n$. Let $\varepsilon_{i,j}^n \sim Binom(1,p)$. Define $A_n = A_{n-1} \cap (\bigcup_{\varepsilon_{i,j}^n = 1} S_{i,j}^n)$.
+
+\pause
+\vspace{10 mm}
+Note that $A_n$ is a decreasing sequence of closed, bounded sets. Define  $A_{\infty} = \lim_{n \to \infty} \bigcap_n A_n$.
+\end{frame}
+
+% Survival
+\begin{frame}{Survival}
+\begin{theorem}
+$\mathbb{P}(A_{\infty} \ne \emptyset) > 0 \iff p > \frac{1}{N^2}$
+\end{theorem}
+
+\pause
+\vspace{10 mm}
+What does this actually mean? \pause The fractal is nonempty if and only if the probability of each square being kept is at least $\frac{1}{N^2}$.
+\end{frame}
+
+% Notation and Theorem
+\begin{frame}{Some Notation and a Theorem}
+Let $B_n = \{x \in A_n$ $|$ $x$ can be connected to both $\{0\} \times [0,1]$ and $\{1\} \times [0,1]\}$ and let $B_{\infty} = \lim_{n \to \infty} \bigcap_n B_n$.
+
+\pause
+\vspace{10 mm}
+If $B_{\infty} \ne \emptyset$ then there is a left-to-right crossing of $[0,1]^2$.
+\end{frame}
+
+% Last Thing
+\begin{frame}{One Last Theorem - A Curiosity}
+Let $p_c(N) = inf\{p \ge 0$ $|$ $\mathbb{P}(B_{\infty} \ne \emptyset) > 0\}$.
+
+\vspace{10 mm}
+\pause
+\begin{theorem}
+$p_c(N) < 1$ for all $N > 1$
+\end{theorem}
+\end{frame}
+
+% Proof
+\begin{frame}{Our Proof}
+\begin{block}{Sketch of Proof.}
+First note that if $N^2 - 1$ of the $N^2$ boxes are kept then any two adjacent squares in the $n^{th}$ level must have adjacent kept boundary offspring squares, telling us $B_{\infty} \ne \emptyset$.
+
+\vspace{10 mm}
+\pause
+It suffices to show that in order to achieve a left-to-right crossing $Z$ must have an $(N^2 - 1)$-ary splitting. By our previous theorem, $1 - \tau(N^2 - 1)$ is the smallest fixed point of $\sum_{j=0}^{N^2 - 2} (1-s)^j \frac{G^{(j)}(s)}{j!}$, where $G(s) = (1 - p + ps)^{N^2}$ is the moment generating function. 
+\end{block}
+\end{frame}
+
+% Proof (Again)
+\begin{frame}{Our Proof}
+\begin{align*}
+f(s) &= \sum_{j=0}^{N^2 - 2} (1 - s)^j \frac{N^2}{(N^2 - j)!j!}p^j(1 - p + ps)^{N^2 - j} \\
+& = \sum_{j=0}^{N^2 - 2} {N^2 \choose j} (p(1 - s))^j(1 - p + ps)^{N^2 - j} \\
+&= 1 - (p(1 - s))^{N^2} - N^2(p(1 - s))^{N^2 - 1}(1 - (p(1 - s)) \\
+&= \mathbb{P}(Binom(N^2, (1 - s)p) < N^2 - 1)
+\end{align*}
+
+\vspace{10 mm}
+\pause
+$\therefore$ $1 - f(s) = (p(1 - s))^{N^2} + N^2(p(1 - s))^{N^2 - 1}(1 - (p(1 - s))$
+\end{frame}
+
+% Proof (Again)
+\begin{frame}{Our Proof}
+First note that in order to find $p < 1$ such that there is an $s < 1$ with $1 - f(s) = 1 - s$ we can find $s < 1$ for which $1 - f(s) > 1 - s$.
+
+\vspace{10 mm}
+\pause
+Next, note that using Taylor Expansions around $x > 0$ we have:
+\begin{enumerate}
+\item $(1 - x)^M \ge 1 - Mx$
+\item $(1 - x)^M \le 1 - Mx + \frac{M(M - 1)}{2}x^2$
+\end{enumerate}
+\end{frame}
+
+% Proof (Again)
+\begin{frame}{Our Proof}
+\tiny
+\begin{align*}
+1 - f(s) &= (p(1 - s))^{N^2} + N^2(p(1 - s))^{N^2 - 1}(1 - (p(1 - s)) \\
+&= p^{N^2}(1 - s)^{N^2} + N^2p^{N^2 - 1}(1 - s)^{N^2 - 1} - N^2p^{N^2}(1 - s)^{N^2} \\
+&= N^2p^{N^2 - 1}(1 - s)^{N^2 - 1} - (N^2 - 1)p^{N^2}(1 - s)^{N^2} \\
+&\ge N^2p^{N^2 - 1}(1 - (N^2 - 1)s) - (N^2 - 1)p^{N^2} (1 - N^2s + \frac{N^2(N^2 - 1)}{2}s^2) \\
+&= (p^{N^2 - 1}(N^2(1 - p) + p)) - (N^2(N^2 - 1)p^{N^2 - 1}(1 - p))s - (\frac{N^2(N^2 - 1)^2}{2}p^{N^2})s^2 \\
+&\equiv a - bs - cs^2
+\end{align*}
+\normalsize
+\end{frame}
+
+% Proof (Again)
+\begin{frame}{Our Proof}
+Note as $p \to 1$ we can conclude $a \to 1$, $b \to 0$, and $c \to \frac{N^2(N^2 - 1)^2}{2}$.
+
+\pause
+\vspace{10 mm}
+Hence for $p = 1$, $ \forall s \in (0, \frac{1}{N^2(N^2 - 1)^2})$, we have that $1 - \frac{N^2(N^2 - 1)^2}{2}s^2 > 1 - s$.
+
+\pause
+\vspace{10 mm}
+As $f$ is continuous there exist $\delta '$, $\delta > 0$ small enough such that if $1 - \delta < p < 1$ then $\forall s \in (\delta ', \frac{2}{N^2(N^2 - 1)^2} - \delta ') \ne \emptyset$, $1 - f(s) > 1 - s$. In particular, there is some $p < 1$ for which there is an $s < 1$ such that $1 - f(s) > 1 - s$.
+
+\hspace{100 mm} $\qed$
+\end{frame}
+
+% Final Slide
+\begin{frame}{The End}
+\huge
+\centerline{Questions?}
+\end{frame}
+
+% Stuff
+\end{document}
