@@ -1,0 +1,581 @@
+\documentclass{beamer}
+%This removes the navigation bar that appears at the bottom of the slides.
+%Tis most unnecessary
+\setbeamertemplate{navigation symbols}{}
+\usetheme{Warsaw}
+\title[A Taste of Mathematical Morphology]
+      {Mighty Morphin Image Processing}
+\subtitle{A Taste of Mathematical Morphology}
+\author{Zach Littrell}
+\institute{McDaniel College}
+
+%My own macros
+
+%graphics macros
+\newcommand{\pic}[2]{
+     \begin{array}{l}
+      \includegraphics[#1]{#2}
+      \end{array}
+}
+\newcommand{\imagetransform}[3]{
+  \begin{figure}
+     \includegraphics[#1]{#2}
+     \includegraphics[#1]{#3} 
+  \end{figure}
+}
+
+%text macros
+\newcommand{\bad}[1]{\textcolor{red}{#1}}
+
+%basic set operators
+\newcommand{\set}[1]{\left\lbrace #1 \right\rbrace}
+\newcommand{\buildset}[2]{\set{#1 \mid #2}}
+\newcommand{\tuple}[1]{\left\langle #1 \right\rangle}
+\newcommand{\intersect}{\cap}
+\newcommand{\union}{\cup}
+\newcommand{\bigintersect}[1]{\displaystyle\bigcap_{#1}}
+\newcommand{\bigunion}[1]{\displaystyle\bigcup_{#1}}
+\newcommand{\power}[1]{\mathbb{P}\left(#1\right)}
+\newcommand{\integers}{\mathbb{Z}}
+\newcommand{\coords}{\integers \times \integers}
+\newcommand{\func}[3]{#1:#2\rightarrow#3}
+\newcommand{\meet}[1]{\bigwedge_{#1}}
+\newcommand{\join}[1]{\bigvee_{#1}}
+
+
+%morphological operators
+\newcommand{\dilate}{\oplus}
+\newcommand{\unidilate}{\delta}
+\newcommand{\erode}{\ominus}
+\newcommand{\unierode}{\epsilon}
+\newcommand{\hitmiss}{\circledast}
+\newcommand{\partialless}{\leqslant}
+
+\begin{document}
+\begin{frame}
+  \titlepage
+\end{frame}
+\section{Nutshell}
+\subsection{Nutshell}
+%Here, we discuss the history of morphology
+%%\subsection{When I'm 64...}
+%%\begin{frame}{History}
+%%  1964 in America
+%%  \begin{figure}
+%%     \includegraphics[width=200pt]{./images/The_Fabs.JPG}
+%%   \end{figure} 
+%%\end{frame}
+
+\subsection{When I'm 64...}
+%Initial history
+\begin{frame}{History}{1964 onwards}
+$\pic{width=100pt}{./images/matheron.jpg}
+\pic{width=75pt}{./images/serra.jpg}
+\pic{width=100pt}{images/petrograph.png}
+$
+
+\begin{itemize} 
+  \item Primarily developed by Jean Serra, an engineer
+        \footnote{AND he had degrees in psychology/philosophy,
+                  Mathematical Geology, and Mathematics},
+        and his PhD advisor, Georges Matheron.
+  \item Initially developed to detect patterns in images of minerals.
+\end{itemize}
+\end{frame}
+
+%More modern day
+\begin{frame}{History: The Center of Mathematical Morphology}
+  \begin{itemize}
+    \item In 1968, the Centre de Morphologie Math\'{e}matique 
+          was founded, for the further development of Mathematical Morphology.
+          $$\pic{width=100pt}{images/cmm.png}
+            \pic{width=100pt}{images/directions.png}$$
+  \end{itemize}
+\end{frame}
+
+%Today!
+\begin{frame}{History: Mathematical Morphology Today}
+  Just a few places where Mathematical Morphology can be found:
+  \begin{itemize}
+     \item Mathematica (a few pictures here were made using Mathematica 8!)
+     \item 
+  \end{itemize}
+\end{frame}
+
+%Nutshell!
+\begin{frame}{Mathematical Morphology: Nutshell Edition}
+  When in Mathematical Morphology, we...
+  \begin{itemize}
+    \item Want to analyze properties like shapes in an image.
+    \item Want to work with images as sets!
+  \end{itemize} 
+\end{frame}
+
+\section{Binary Morphology}
+
+\subsection{Binary Images}
+%Here, we discuss how we convert binary images into matrices
+\begin{frame}{Images $\Rightarrow$ Matrix}
+\begin{figure}
+\centering
+$\pic{width=50pt}{images/cross.png}$
+$\Rightarrow$
+$\begin{bmatrix}
+  1 & 0 & 1\\
+  0 & 0 & 0\\
+  1 & 0 & 1
+\end{bmatrix}$
+\end{figure}
+\end{frame}
+
+%Here, we discuss how we convert binary images into sets
+\begin{frame}{Images $\Rightarrow$ Sets}
+\begin{figure}
+\centering
+$\pic{width=50pt}{images/cross.png}  $
+$\Rightarrow
+\begin{bmatrix}
+  0 & 1 & 0\\
+  1 & 1 & 1\\
+  0 & 1 & 0
+\end{bmatrix}
+\Rightarrow$
+$\set{\begin{aligned}
+      &\tuple{0,1},\\
+      &\tuple{-1,0},\tuple{0,0},\tuple{1,0},\\
+      &\tuple{0,-1}
+      \end{aligned}}$
+\end{figure}
+\end{frame}
+
+%Introducing Cool Hamblen
+\begin{frame}{Introducing Cool Hamblen}
+For many examples, we'll use simple shapes.
+
+When we don't, I'm going to rely on my assistant: Cool Hamblen.
+
+$\pic{width=100pt}{./images/coolhamblen.png}
+\pic{width=100pt}{./images/binarycoolhamblen.png}$
+\end{frame}
+
+\subsection{Set Operators}
+%Refleciton first:
+\begin{frame}{A Gaggle of Set Operators:Reflection}
+  For a set $A \subseteq \integers^2$,
+
+           $$-A = \buildset{\tuple{-x,-y}}
+                          {\tuple{x,y} \in A}$$
+
+           $$\pic{width=50pt}{./images/coolhamblen_reflected.png}$$
+\end{frame}
+%
+%Now complement
+\begin{frame}{A Gaggle of Set Operators: Inversion}
+   For a set $A \subseteq \integers^2$,
+          
+          $$A^c = \buildset{\tuple{x,y}}
+                          {\tuple{x,y}\not\in A}$$
+
+          $$\pic{width=50pt}{./images/coolhamblen_complement.png}$$
+\end{frame}
+%And now translation
+\begin{frame}{A Gaggle of Set Operators: Translation}
+  For set $A \subseteq \mathbb{Z}^2$, and $\tuple{a,b} \in \mathbb{Z}^2$
+
+
+    $$A+z = \buildset{\tuple{x+a,y+z}}
+                    {\tuple{x,y} \in A}$$
+    $$\pic{width=50pt}{./images/coolhamblen_translated.png}$$
+\end{frame} 
+
+\subsection{Morphology Primitives}
+%Introducing Dilation and Erosion
+\begin{frame}{$\dilate$ Dilation and $\erode$ Erosion}
+  The backbone of morphology boils down to two functions:
+  \begin{itemize}
+    \item $\dilate$ Dilation
+    \item $\erode$ Erosion
+  \end{itemize}
+  They are to Mathematical Morphology what Union and Intersection is for
+  Set Theory (they are that deceptively awesome).
+\end{frame}
+%Defining dilation
+\begin{frame}{$\dilate$ Dilation: The Intuition Version}
+  We'd like to have a sort of 'smearing' operation. 
+  We'll call this dream operation \emph{dilation}.
+  \footnote{Fun fact: Matheron called this \textbf{dilatation}\\
+            More fun fact: Practically no one else does.}
+    $$\pic{width=100pt}{images/dilation_example.png}$$
+      Black=Original image\\
+      Blue=Added regions in dilation\\
+      Red=Structuring element at one point during dilation
+\end{frame}
+
+\begin{frame}{$\dilate$ Dilation: The Set Version}
+  \begin{definition}
+    For binary sets $A$ and $B$, we define the \emph{dilation} of $A$ by $B$
+    to be:
+    $$A \dilate B = \buildset{z \in \mathbb{Z}^2}
+                             {-B+z \intersect A \not= \emptyset}$$
+  \end{definition}
+  
+\end{frame}
+%Defining erosion
+\begin{frame}{$\erode$ Erosion: The Intuition Version}
+  We'd like to have a sort of 'shrinking' operation. 
+  We'll call this dream operation \emph{erosion}.
+    $$\pic{width=100pt}{images/erosion_example.png}$$
+      Black=Original image\\
+       Blue=Remaining regions after erosion\\
+       Red=Structuring element at one point during erosion
+ 
+\end{frame}
+
+\begin{frame}{$\erode$ Erosion: The Set Version}
+   \begin{definition}
+    For binary sets $A$ and $B$, we define the \emph{erosion} of 
+    $A$ by $B$ to be:
+    $$A \erode B=\buildset{z \in \mathbb{Z}^2}{B+z \subseteq A}$$
+  \end{definition}
+ 
+\end{frame}
+%Checking out what happens when we use off-origin structuring elements.
+\begin{frame}{Dilating with Funky Structuring Elements (FSEs)}
+  What happens if we try to dilate with structuring elements that aren't
+  centered at the origin? (Let's find out!)
+
+  Let $A = \pic{width=50pt}{images/binarycoolhamblen.png}$,
+      $B = \pic{width=50pt}{images/fse.png}=
+           \set{\tuple{100,100}}$
+
+\end{frame}
+
+\begin{frame}{Dilating with FSEs: Results}
+
+$$\pic{width=50pt}{./images/coolhamblen_translated.png}$$
+
+Well, I'll be a monkey's uncle.
+
+\end{frame}
+
+%Revising the definitions of Dilation and Erosion
+\begin{frame}{Dilation 'n' Erosion Redux}
+
+  Dilation can be rewritten as
+  \begin{itemize}
+    \item $A \dilate B = A + B = \buildset{A + b}{b \in B}$
+    \item $A \dilate B = \bigunion{b \in B}A + b$
+  \end{itemize}
+
+  Erosion can be rewritten as
+  \begin{itemize}
+    \item $A \erode B = \bigintersect{b \in B}A + (-b)$
+  \end{itemize}
+  
+\end{frame}
+
+%Showing that Dilation and Erosion are duals of each other
+\begin{frame}{Dilation and Erosion Turn Out To Be Brothers}
+  Erosion and Dilation can actually be written in terms of the other.
+
+  $(A \dilate B)^c = A^c \erode -B$
+
+  $(A \erode C)^c = A^c \dilate -B$
+\end{frame}
+
+\subsection{Morphological Functions}
+
+%Confronting the problem that necessitates hit or miss
+\begin{frame}{Using Morphology for Pattern Detection}
+  I heard a rumor that Cool Hamblen is now sporting a penguin on his
+  shirt. 
+  $$\pic{width=100pt}{images/tux_coolhamblen.png}$$
+\end{frame}
+
+%The first hit with erosion
+\begin{frame}{Using Erosion for Pattern Detection}
+  Erosion get's us close...
+  $$\pic{width=100pt}{images/tux_coolhamblenhit1.png}$$
+\end{frame}
+
+%Why that just won't work
+\begin{frame}{Using Erosion for Pattern Detection}
+$$\pic{width=100pt}{images/tux_coolhamblenhit2.png}$$
+Woopsy daisy.
+\end{frame}
+
+%Ok, what's a mildly better way?
+\begin{frame}{$\hitmiss$ Hit or Miss Transform: The Intuition Version}
+  We'd like to specify not only what we want to match, or 'hit,' 
+  but also patterns we DON'T want to match, or 'miss.'
+
+  $B_1 = \pic{width=100pt}{images/binarytux.png}$ 
+  $B_2 = \pic{width=100pt}{images/binarytuxmiss.png}$
+\end{frame}
+
+
+%Introducing the concept of Hit or Miss transform.
+\begin{frame}{$\hitmiss$ Hit or Miss Transform: The Straightforward Version}
+
+  \begin{itemize}
+    \item This we can define already as a set.
+          \begin{definition}
+          For sets $A \in \mathbb{Z}^2$,
+                   $B = \tuple{B_1,B_2} \in \mathbb{Z}^2 \times \mathbb{Z}^2$,
+          we define the \emph{hit-or-miss transformation} of 
+          $A$ by $B$ as
+          $$A \hitmiss B = \buildset{z \in \mathbb{Z}^2}
+                                    {B_1+z \subseteq A,
+                                     B_2+z \subseteq A^c}$$
+          \end{definition}
+    \item This needs more morphology... $\pic{width=75pt}{images/Walken-Cowbell.jpg}$
+  \end{itemize}
+\end{frame}
+
+%The morphological definition of Hit or Miss.
+\begin{frame}{$\hitmiss$ Hit or Miss Transform: The Morphological Version}
+  \begin{itemize}
+   \item 
+   Recall that $A \erode B_1$ is all points where $B_1$ is contained
+        in $A$, and $A^c \erode B_2$ is all points where $B_2$ is contained
+        in $A^c$.
+    \item 
+    So let's revise our definition:
+     \begin{definition}
+          For sets $A \in \mathbb{Z}^2,
+                    B=\tuple{B_1,B_2}\in \power{\mathbb{Z}^2} \times
+                                         \power{\mathbb{Z}^2}$,
+          we define the \emph{hit-or-miss transformation} of
+          $A$ by $B$ as
+          $$A \hitmiss B = A \erode B_1 \intersect A^c \erode B_2$$
+          or
+          $$A \hitmiss B = A \erode B_1 \setminus A \dilate (-B_2)$$ 
+        \end{definition}
+   \end{itemize}
+\end{frame}
+
+%Let's see it in action!
+\begin{frame}{$\hitmiss$ Using Hit or Miss Transform for Pattern Detection}
+  $\pic{width=75pt}{images/tux_coolhamblenhitmiss.png} 
+   \Rightarrow \pic{width=75pt}{images/tux_coolhamblenhitmisstransformed.png}
+   \Rightarrow \pic{width=75pt}{images/tux_coolhamblenhitmisstransformeddilate.png}
+$
+
+
+\end{frame}
+%Now some more morphological functions
+%Starting with Boundary Extraction
+\begin{frame}{A Gaggle of  Binary Morphological Functions:\\
+              Boundary Extraction}
+We can extract the boundary using the equation:
+$$A - (A \erode B)$$
+
+$\pic{width=75pt}{images/binarycoolhamblen.png}
+ -
+ \pic{width=75pt}{images/coolhamblen_eroded.png}
+ =
+ \pic{width=75pt}{images/coolhamblen_boundary.png}$
+
+\end{frame}
+%The region filling/bucket algorithm
+\begin{frame}{A Gaggle of Binary Morpophological Functions:\\
+              Region Filling:}
+  We can fill up a region using the following recursive equation:
+  $$X_k=(X_{k-1}\dilate B)-A$$
+  where $X_0 = \set{p}$, for some point $p$ in the region to be filled.
+
+  So, let's fill up the top triangle in this image: 
+  $\pic{width=20pt}{images/triangles.png}$
+
+$
+    \begin{array}{c|c|c|c|c|c}
+     X_1 & X_2 & X_3 & X_4 & X_4 \union A\\\hline
+     \pic{width=20pt}{images/triangles1.png}
+     &\pic{width=20pt}{images/triangles2.png}
+     &\pic{width=20pt}{images/triangles3.png}
+     &\pic{width=20pt}{images/triangles4.png}
+     &\pic{width=20pt}{images/trianglesfilled.png}
+   \end{array}$
+ 
+
+\end{frame}
+
+%The Connected Component Extraction algorithm%
+\begin{frame}{A Gaggle of Binary Morphological Functions:\\
+              Connected Component Extraction:}
+   We can extract an individual component of an image using the recursive
+   equation:
+   $$X_k = (X_{k-1} \dilate B) \intersect A$$
+     where $X_0 = \set{p}$, for some point $p$ in the component
+
+  Man, I'd sure love to extract that triangle from this image: 
+$
+   \pic{width=20pt}{images/shapes.png}$
+
+   $\begin{array}{c|c|c|c|c|c}
+     X_1 & X_2 & X_3 & X_4 & X_5 & X_6\\\hline
+     \pic{width=20pt}{images/shapes1.png}
+     &\pic{width=20pt}{images/shapes2.png}
+     &\pic{width=20pt}{images/shapes3.png}
+     &\pic{width=20pt}{images/shapes4.png}
+     &\pic{width=20pt}{images/shapes5.png}
+     &\pic{width=20pt}{images/shapes6.png}
+   \end{array}$
+
+\end{frame}
+              
+\section{Grayscale Morphology}
+\subsection{Attempt \#1}
+%Describing how the problem changes when we move to grayscale
+\begin{frame}{What's New With Grayscale?}
+  \begin{itemize}
+    \item Pixels can now be \textbf{between} 0 and 1.
+    \item So our pixels now live in $\mathbb{Z}^3$, namely
+          they take the form of $\tuple{x,y,value}$.
+    \item Can't be nearly as cheatsy as we were with binary images.
+  \end{itemize}
+\end{frame}
+
+%Attempting at defining grayscale dilation with Minkowski sum
+\begin{frame}{Operation Minkowski: Attempt \#1 at Dilation}
+  The Minkowski Sum definition of dilation ought to translate pretty
+        well to $\mathbb{Z}^3$ 
+
+  Let $A = \set{\tuple{0,0,0},\tuple{0,1,0}}$
+
+        Let $B = \set{\tuple{1,1,1},\tuple{1,0,0}}$
+
+        $A \dilate B = \set{\bad{\tuple{1,1,1}},
+                            \tuple{1,2,1},
+                            \tuple{1,0,0},
+                            \bad{\tuple{1,1,0}}}$
+
+  Everything okie dokie artichokie?
+\end{frame}
+
+\subsection{Attempt \#2}
+
+%Setting up how Dilation should work
+\begin{frame}{Operation Supremum: Attempt \#2 at Dilation}
+  Given a grayscale image like this
+  $$\pic{width=50pt}{images/grayscale_tiles.png}$$  
+  Let's examine what should happen at a point
+  $$\pic{width=50pt}{images/grayscale_tiles_point.png}$$
+\end{frame}
+
+%Giving the intuitive definition
+\begin{frame}{Operation Supremum: Intuition at Dilation}
+  Using our handy dandy cross structuring element, we'll gather values from
+  our neighborhood.
+  $$\pic{width=50pt}{images/grayscale_tiles_neighborhood.png}$$  
+  And we pick the \emph{largest} (i.e. closest to white) value.
+  $$\pic{width=50pt}{images/grayscale_tiles_point_replacement.png}$$
+\end{frame}
+
+%Defining dilation in terms of functions
+\begin{frame}{$\dilate$ Dilation}
+\begin{definition}
+  For functions $f,g: \mathbb{Z}\times\mathbb{Z}\rightarrow [0,1]$,
+  we define the $dilation$ of $A$ by $B$ as
+  $$(A \dilate B)(x,y) = \displaystyle\sup_{\tuple{x',y'} \in \integers^2}
+                                      \set{f(x-x',y-y') + g(x',y')}$$
+\end{definition}
+  $$\pic{width=50pt}{images/grayscale_tiles.png}
+    \dilate \pic{width=50pt}{images/cross_inverted.png}
+     = \pic{width=50pt}{images/grayscale_tiles_dilated.png}$$
+\end{frame}
+
+%Of course we gotta do the same for erosion.
+\begin{frame}{Operation Infimum: Intuition at Erosion}
+  Once again, we observe the neighborhood formed by our structuring element
+  at a point.
+  $$\pic{width=50pt}{images/grayscale_tiles_neighborhood2.png}$$
+  This time, however, we take the \emph{smallest} (i.e. closest to black)
+  value.
+  $$\pic{width=50pt}{images/grayscale_tiles_point_replacement2.png}$$
+\end{frame}
+
+%Defining Erosion
+\begin{frame}{$\erode$ Erosion}
+\begin{definition}
+  For functions $f,g: \mathbb{Z}\times\mathbb{Z}\rightarrow [0,1]$,
+  we define the $erosion$ of $A$ by $B$ as
+  $$(A \erode B)(x,y) = \displaystyle\inf_{\tuple{x',y'} \in \mathbb{Z}}
+                                      \set{f(x+x',y+y') - g(x',y')}$$
+\end{definition}
+$$\pic{width=50pt}{images/grayscale_tiles.png}
+  \erode \pic{width=50pt}{images/cross_inverted.png}
+  = \pic{width=50pt}{images/grayscale_tiles_eroded.png}$$
+\end{frame}
+
+\section{Generalized Morphology}
+\subsection{The Hunt is on...}
+%Describing our basic necessities for generalized morphology
+\begin{frame}{What do we want?}
+  Things we need:
+  \begin{itemize}
+    \item We need generalized forms of dilation and erosion.
+    \item Ought to work for both Binary and Grayscale morphology.
+  \end{itemize} 
+\end{frame}
+
+%Reintroducing tools needed for general morphology
+\subsection{Lattices}
+\begin{frame}{Complete Lattices}
+  \begin{definition}
+    Let $L$ be a partially ordered set such that 
+    every subset of $L$ has a supremum and infimum. 
+    We call $L$ a \emph{complete lattice}.
+  \end{definition}
+  Note, for 
+\end{frame}
+%Defining dilation for complete lattices
+\begin{frame}{$\unidilate$ Dilation on Complete Lattices}
+   Let $(L, \partialless)$ be a complete lattice, and $\set{X_i}$ be
+   a collection of elements from $L$.
+   \begin{definition}
+     Let $\func{\unidilate}{L}{L}$ be a function such that
+       $$\join{i} \unidilate(X_i) = 
+         \unidilate\left(\join{i}X_i\right)$$
+     We call $\unidilate$ a \emph{dilation}.
+   \end{definition}
+\end{frame}
+
+%Defining dilation for complete lattices
+\begin{frame}{$\unierode$ Erosion on Complete Lattices}
+   Let $(L, \partialless)$ be a complete lattice, and $\set{X_i}$ be
+   a collection of elements from $L$.
+   \begin{definition}
+     Let $\func{\unierode}{L}{L}$ be a function such that
+       $$\meet{i} \unierode(X_i) = 
+         \unierode\left(\meet{i}X_i\right)$$
+     We call $\unierode$ an \emph{erosion}.
+   \end{definition}
+\end{frame}
+
+\subsection{Getting back our old morphologies}
+
+%Considering the case of the powerset of our plane
+\begin{frame}{$\power{\integers^2}$, a Complete Lattice}
+Consider the powerset of $\integers^2$.
+Let $\partialless$ be $\subseteq$.
+
+Conveniently, $\meet{} = \bigintersect{}$, and $\join{} = \bigunion{}$.
+
+Bingo, bango, we have binary morphology again.
+\end{frame}
+
+%Consdering the case of grayscale functions
+\begin{frame}{Grayscale functions}
+Consider the set of all functions $\func{f}{\coords}{\lbrack 0,1 \rbrack}$.
+
+Let $f,g$ be two such functions.
+
+We say $f \partialless g$ if 
+$\forall \tuple{x,y} \in \coords, f(x,y) \leq g(x,y)$
+
+Oingo, boingo, we have grayscale morphology again.
+
+
+\end{frame}
+\end{document}
