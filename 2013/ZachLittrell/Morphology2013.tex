@@ -9,6 +9,9 @@
 \author{Zach Littrell}
 \institute{McDaniel College}
 
+%Packages imported
+\usepackage{pgffor}
+
 %My own macros
 
 %graphics macros
@@ -39,8 +42,9 @@
 \newcommand{\integers}{\mathbb{Z}}
 \newcommand{\coords}{\integers \times \integers}
 \newcommand{\func}[3]{#1:#2\rightarrow#3}
-\newcommand{\meet}[1]{\bigwedge_{#1}}
-\newcommand{\join}[1]{\bigvee_{#1}}
+\newcommand{\meet}[1]{\displaystyle\bigwedge_{#1}}
+\newcommand{\join}[1]{\displaystyle\bigvee_{#1}}
+\newcommand{\imply}{\Rightarrow}
 
 
 %morphological operators
@@ -51,28 +55,28 @@
 \newcommand{\hitmiss}{\circledast}
 \newcommand{\partialless}{\leqslant}
 
+%penguinstack morphology 
+\newcommand{\penguin}[1]{
+  \pic{width=#1}{images/tux.png}
+}
+\newcommand{\babypenguin}{\penguin{10pt}}
+\newcommand{\kidpenguin}{\penguin{25pt}}
+\newcommand{\adultpenguin}{\penguin{50pt}}
+\newcommand{\greatpenguin}{\penguin{60pt}}
+
 \begin{document}
 \begin{frame}
   \titlepage
 \end{frame}
 \section{Nutshell}
 \subsection{Nutshell}
-%Here, we discuss the history of morphology
-%%\subsection{When I'm 64...}
-%%\begin{frame}{History}
-%%  1964 in America
-%%  \begin{figure}
-%%     \includegraphics[width=200pt]{./images/The_Fabs.JPG}
-%%   \end{figure} 
-%%\end{frame}
 
 \subsection{When I'm 64...}
 %Initial history
 \begin{frame}{History}{1964 onwards}
 $\pic{width=100pt}{./images/matheron.jpg}
 \pic{width=75pt}{./images/serra.jpg}
-\pic{width=100pt}{images/petrograph.png}
-$
+\pic{width=100pt}{images/petrograph.png}$
 
 \begin{itemize} 
   \item Primarily developed by Jean Serra, an engineer
@@ -90,17 +94,19 @@ $
           was founded, for the further development of Mathematical Morphology.
           $$\pic{width=100pt}{images/cmm.png}
             \pic{width=100pt}{images/directions.png}$$
+          \item They have ~10 patents on MM-related technology,
+                and continue to research the topic.
   \end{itemize}
 \end{frame}
 
-%Today!
-\begin{frame}{History: Mathematical Morphology Today}
-  Just a few places where Mathematical Morphology can be found:
-  \begin{itemize}
-     \item Mathematica (a few pictures here were made using Mathematica 8!)
-     \item 
-  \end{itemize}
-\end{frame}
+%%%Today!
+%%\begin{frame}{History: Mathematical Morphology Today}
+%%  Just a few places where Mathematical Morphology can be found:
+%%  \begin{itemize}
+%%     \item Mathematica (a few pictures here were made using Mathematica 8!)
+%%     \item 
+%%  \end{itemize}
+%%\end{frame}
 
 %Nutshell!
 \begin{frame}{Mathematical Morphology: Nutshell Edition}
@@ -135,9 +141,9 @@ $\begin{bmatrix}
 $\pic{width=50pt}{images/cross.png}  $
 $\Rightarrow
 \begin{bmatrix}
-  0 & 1 & 0\\
-  1 & 1 & 1\\
-  0 & 1 & 0
+  1 & 0 & 1\\
+  0 & 0 & 0\\
+  1 & 0 & 1
 \end{bmatrix}
 \Rightarrow$
 $\set{\begin{aligned}
@@ -183,7 +189,7 @@ $\pic{width=100pt}{./images/coolhamblen.png}
   For set $A \subseteq \mathbb{Z}^2$, and $\tuple{a,b} \in \mathbb{Z}^2$
 
 
-    $$A+z = \buildset{\tuple{x+a,y+z}}
+    $$A+z = \buildset{\tuple{x+a,y+b}}
                     {\tuple{x,y} \in A}$$
     $$\pic{width=50pt}{./images/coolhamblen_translated.png}$$
 \end{frame} 
@@ -199,6 +205,18 @@ $\pic{width=100pt}{./images/coolhamblen.png}
   They are to Mathematical Morphology what Union and Intersection is for
   Set Theory (they are that deceptively awesome).
 \end{frame}
+
+%Quick introduction to structuring elements
+\begin{frame}{Structuring Elements}
+  Many morphological functions use another image that characterizes 
+  what the output will look like.
+
+  We will call such images \emph{structuring elements}.
+
+  More often than not, we'll be using the cross structuring element:
+  $$\pic{width=50pt}{images/cross.png}$$
+\end{frame}
+
 %Defining dilation
 \begin{frame}{$\dilate$ Dilation: The Intuition Version}
   We'd like to have a sort of 'smearing' operation. 
@@ -259,6 +277,20 @@ Well, I'll be a monkey's uncle.
 \end{frame}
 
 %Revising the definitions of Dilation and Erosion
+\begin{frame}{Dilation Redux}
+  Dilation can be rewritten as
+  $A \dilate B = A + B = \buildset{A + b}{b \in B}$  
+  \begin{proof}
+    \begin{align*}
+        \text{Let } z \in A \dilate B
+      &\imply -B + z \intersect A \not= \emptyset
+    \\&\imply \exists b \in B, -b + z \in A
+    \\&\imply \exists a \in A, -b + z = a
+    \\&\imply z = a+b
+    \\&\imply z \in A+B
+    \end{align*}
+  \end{proof}
+\end{frame}
 \begin{frame}{Dilation 'n' Erosion Redux}
 
   Dilation can be rewritten as
@@ -280,7 +312,17 @@ Well, I'll be a monkey's uncle.
 
   $(A \dilate B)^c = A^c \erode -B$
 
-  $(A \erode C)^c = A^c \dilate -B$
+  $(A \erode B)^c = A^c \dilate -B$
+
+  \begin{proof}
+    \begin{align*}
+        (A \dilate B)^c
+      &=\buildset{z}{-B+z \intersect A \not= \emptyset}^c
+    \\&=\buildset{z}{-B+z \intersect A = \emptyset}
+    \\&=\buildset{z}{-B+z \subseteq A^c}
+    \\&=A^c \erode -B
+    \end{align*}
+  \end{proof}
 \end{frame}
 
 \subsection{Morphological Functions}
@@ -475,10 +517,10 @@ $
 %Defining dilation in terms of functions
 \begin{frame}{$\dilate$ Dilation}
 \begin{definition}
-  For functions $f,g: \mathbb{Z}\times\mathbb{Z}\rightarrow [0,1]$,
+  For functions $f,b: \mathbb{Z}\times\mathbb{Z}\rightarrow [0,1]$,
   we define the $dilation$ of $A$ by $B$ as
   $$(A \dilate B)(x,y) = \displaystyle\sup_{\tuple{x',y'} \in \integers^2}
-                                      \set{f(x-x',y-y') + g(x',y')}$$
+                                      \set{f(x-x',y-y') + b(x',y')}$$
 \end{definition}
   $$\pic{width=50pt}{images/grayscale_tiles.png}
     \dilate \pic{width=50pt}{images/cross_inverted.png}
@@ -498,17 +540,65 @@ $
 %Defining Erosion
 \begin{frame}{$\erode$ Erosion}
 \begin{definition}
-  For functions $f,g: \mathbb{Z}\times\mathbb{Z}\rightarrow [0,1]$,
+  For functions $f,b: \mathbb{Z}\times\mathbb{Z}\rightarrow [0,1]$,
   we define the $erosion$ of $A$ by $B$ as
   $$(A \erode B)(x,y) = \displaystyle\inf_{\tuple{x',y'} \in \mathbb{Z}}
-                                      \set{f(x+x',y+y') - g(x',y')}$$
+                                      \set{f(x+x',y+y') - b(x',y')}$$
 \end{definition}
 $$\pic{width=50pt}{images/grayscale_tiles.png}
   \erode \pic{width=50pt}{images/cross_inverted.png}
   = \pic{width=50pt}{images/grayscale_tiles_eroded.png}$$
 \end{frame}
 
+\subsection{Application}
+%Setting up edge detection
+\begin{frame}{Edge Detection in Grayscale Images}
+
+  Sure would be nice if we could (morphologically) detect
+  edges  in Grayscale.
+  $$\pic{width=75pt}{images/grayscalecoolhamblen.png}$$
+  
+  For this, we'll define edges as being neighborhoods where 
+  the intensity changes (boy, I sure wish we had primitive functions
+  that found the light and dark values of neighborhoods).
+\end{frame}
+
+%Morphological Gradient to the rescue!
+\begin{frame}{Edge Detection via Morphological Gradient}
+  \begin{definition}
+    For two grayscale functions, we define the 
+    \emph{morphological gradient} to be:
+    $$g(f,b) = f \dilate b - f \erode b$$
+  \end{definition} 
+  $$\pic{width=50pt}{images/coolhamblen_graydilated.png}-
+    \pic{width=50pt}{images/coolhamblen_grayeroded.png}=
+    \pic{width=50pt}{images/coolhamblen_gradiented.png}$$
+\end{frame}
+
+
 \section{Generalized Morphology}
+\subsection{Enough of this image nonsense}
+%Introducing the need for generalizing
+\begin{frame}{Generalizing Morphology}
+  Our current definitions of dilation and erosion are bound to
+  the space we defined them on.
+
+  Would be nice to have a general framework for morphology on
+  unfamiliar territory, like...
+\end{frame}
+
+\begin{frame}{Penguin Morphology}
+  Dr. Hamblen asks me (nay, \emph{demands} me) to tell him how we can use morphology to talk about these penguins.
+
+  $$\substack{\pic{width=30pt}{images/tux.png}}
+    \substack{\pic{width=30pt}{images/tux.png}\\
+             \pic{width=30pt}{images/tux.png}}
+    \substack{\pic{width=30pt}{images/tux.png}\\
+              \pic{width=30pt}{images/tux.png}\\
+              \pic{width=30pt}{images/tux.png}\\
+              .\\.\\.}$$
+  
+\end{frame}
 \subsection{The Hunt is on...}
 %Describing our basic necessities for generalized morphology
 \begin{frame}{What do we want?}
@@ -527,8 +617,10 @@ $$\pic{width=50pt}{images/grayscale_tiles.png}
     every subset of $L$ has a supremum and infimum. 
     We call $L$ a \emph{complete lattice}.
   \end{definition}
-  Note, for 
+  Note, we denote the supremum of a set with $\join{}$ and
+  the infimum as $\meet{}$.
 \end{frame}
+
 %Defining dilation for complete lattices
 \begin{frame}{$\unidilate$ Dilation on Complete Lattices}
    Let $(L, \partialless)$ be a complete lattice, and $\set{X_i}$ be
@@ -537,11 +629,14 @@ $$\pic{width=50pt}{images/grayscale_tiles.png}
      Let $\func{\unidilate}{L}{L}$ be a function such that
        $$\join{i} \unidilate(X_i) = 
          \unidilate\left(\join{i}X_i\right)$$
+     and the dilation of the least element is the least element.
+
+
      We call $\unidilate$ a \emph{dilation}.
    \end{definition}
 \end{frame}
 
-%Defining dilation for complete lattices
+%Defining erosion for complete lattices
 \begin{frame}{$\unierode$ Erosion on Complete Lattices}
    Let $(L, \partialless)$ be a complete lattice, and $\set{X_i}$ be
    a collection of elements from $L$.
@@ -549,33 +644,104 @@ $$\pic{width=50pt}{images/grayscale_tiles.png}
      Let $\func{\unierode}{L}{L}$ be a function such that
        $$\meet{i} \unierode(X_i) = 
          \unierode\left(\meet{i}X_i\right)$$
+
+     and the erosion of the max element is the max element.
+
      We call $\unierode$ an \emph{erosion}.
    \end{definition}
 \end{frame}
 
-\subsection{Getting back our old morphologies}
-
-%Considering the case of the powerset of our plane
-\begin{frame}{$\power{\integers^2}$, a Complete Lattice}
-Consider the powerset of $\integers^2$.
-Let $\partialless$ be $\subseteq$.
-
-Conveniently, $\meet{} = \bigintersect{}$, and $\join{} = \bigunion{}$.
-
-Bingo, bango, we have binary morphology again.
+%Getting back our old morphologies
+\begin{frame}{Old Morphologies (as good as new!)}
+  Binary and grayscale morphology are now just special cases of 
+  Lattice Morphology.
+  \begin{itemize}
+    \item \underline{Binary Morphology}:\\
+          Binary Morphology can be expressed as morphology on
+          $\power{\integers^2}$, with $\partialless$ defined by $\subseteq$.
+    \item \underline{Grayscale Morphology}:\\
+          Grayscale Morphology can be expressed as morphology on
+          grayscale functions, with 
+          $f \partialless b \iff 
+          \forall \tuple{x,y} \in \integers \times \integers,
+          f(x,y) \leq g(x,y)$
+  \end{itemize}
 \end{frame}
 
-%Consdering the case of grayscale functions
-\begin{frame}{Grayscale functions}
-Consider the set of all functions $\func{f}{\coords}{\lbrack 0,1 \rbrack}$.
 
-Let $f,g$ be two such functions.
+%Defining penguin stacks as a lattice
+\begin{frame}{Defining the Penguin Lattice}
+  We'll say for penguin stacks $s_1, s_2$, 
 
-We say $f \partialless g$ if 
-$\forall \tuple{x,y} \in \coords, f(x,y) \leq g(x,y)$
+  $s_1 \partialless s_2 \iff $ the number of penguins in $s_1$ divides
+                               the number of penguins in $s_2$.
+  
+  $$\substack{\penguin{20pt}\\\penguin{20pt}}
+    \partialless
+    \substack{\penguin{20pt}\\\penguin{20pt}\\
+              \penguin{20pt}\\\penguin{20pt}}$$
+\end{frame}
 
-Oingo, boingo, we have grayscale morphology again.
+%Observing the supremum of a penguin stack
+\begin{frame}{Supremal Penguin Stacks}
+  This give us that the supremum of penguin stacks is the least
+  common multiple of the stacks.
 
+  Let $P = \set{\substack{\penguin{10pt}\\\penguin{10pt}},
+                \substack{\penguin{10pt}\\\penguin{10pt}\\
+                          \penguin{10pt}\\}}$
+  $\join{p\in P}p = \substack{\penguin{10pt}\\\penguin{10pt}\\
+                        \penguin{10pt}\\\penguin{10pt}\\
+                        \penguin{10pt}\\\penguin{10pt}}$
+
+   Consequently, our greatest stack is in fact the empty stack!
+\end{frame}
+
+%Observing the infimum of a penguin stack
+\begin{frame}{Infimal Penguin Stack}
+And the infimum of penguin stacks is the greatest common divisor of 
+the stacks.
+$$\meet{p \in P}p = \substack{\penguin{10pt}}$$
+Our least element will be a solo penguin.
+\end{frame}
+
+%Defining dilation 
+\begin{frame}{$\dilate$ Dilation}
+  \begin{definition}
+    For penguin stacks $p$ and $b$, we define the \emph{dilation}
+    of $p$ by $b$ as the penguin stack whose size is equal to 
+    the greatest common divisor of the stacks $p$ and $b$.
+  \end{definition}
+  $$\substack{\penguin{10pt}} \dilate \substack{\penguin{10pt}\\
+                                                \penguin{10pt}}
+    = \substack{\penguin{10pt}}$$
+\end{frame}
+
+
+%Defining penguin stack erosion 
+\begin{frame}{$\erode$ Erosion}
+  \begin{definition}
+    For penguin stacks $p$ and $b$, we define the \emph{erosion}
+    of $p$ by $b$ as the penguin stack whose size is equal to 
+    the least common multiple of the stacks $p$ and $b$.
+  \end{definition}
+  $$\substack{\penguin{10pt}} \erode \substack{\penguin{10pt}\\
+                                                \penguin{10pt}}
+    = \substack{\penguin{10pt}\\\penguin{10pt}}$$
+
+\end{frame}
+
+%Applying Penguin Morphology
+%%\begin{frame}{Applications of Penguin Morphology:}
+%%  Want to know if your penguin stack has a multiple of  
+%%\end{frame}
+
+\section{End}
+\subsection{We made it!}
+%Thanks and questions
+\begin{frame}{Thank you for listening!}
+
+Any questions?
 
 \end{frame}
 \end{document}
