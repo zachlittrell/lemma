@@ -9,8 +9,6 @@
 \author{Zach Littrell}
 \institute{McDaniel College}
 
-%Packages imported
-\usepackage{pgffor}
 
 %My own macros
 
@@ -20,15 +18,10 @@
       \includegraphics[#1]{#2}
       \end{array}
 }
-\newcommand{\imagetransform}[3]{
-  \begin{figure}
-     \includegraphics[#1]{#2}
-     \includegraphics[#1]{#3} 
-  \end{figure}
-}
 
 %text macros
 \newcommand{\bad}[1]{\textcolor{red}{#1}}
+\newcommand{\horizline}{\par\hrulefill}
 
 %basic set operators
 \newcommand{\set}[1]{\left\lbrace #1 \right\rbrace}
@@ -54,15 +47,6 @@
 \newcommand{\unierode}{\epsilon}
 \newcommand{\hitmiss}{\circledast}
 \newcommand{\partialless}{\leqslant}
-
-%penguinstack morphology 
-\newcommand{\penguin}[1]{
-  \pic{width=#1}{images/tux.png}
-}
-\newcommand{\babypenguin}{\penguin{10pt}}
-\newcommand{\kidpenguin}{\penguin{25pt}}
-\newcommand{\adultpenguin}{\penguin{50pt}}
-\newcommand{\greatpenguin}{\penguin{60pt}}
 
 \begin{document}
 \begin{frame}
@@ -223,7 +207,9 @@ $\pic{width=100pt}{./images/coolhamblen.png}
   We'll call this dream operation \emph{dilation}.
   \footnote{Fun fact: Matheron called this \textbf{dilatation}\\
             More fun fact: Practically no one else does.}
-    $$\pic{width=100pt}{images/dilation_example.png}$$
+    $$\pic{width=75pt}{images/box}\Rightarrow
+      \pic{width=75pt}{images/dilation_example.png}\Rightarrow
+      \pic{width=75pt}{images/dilatedbox.png}$$
       Black=Original image\\
       Blue=Added regions in dilation\\
       Red=Structuring element at one point during dilation
@@ -242,8 +228,10 @@ $\pic{width=100pt}{./images/coolhamblen.png}
 \begin{frame}{$\erode$ Erosion: The Intuition Version}
   We'd like to have a sort of 'shrinking' operation. 
   We'll call this dream operation \emph{erosion}.
-    $$\pic{width=100pt}{images/erosion_example.png}$$
-      Black=Original image\\
+    $$\pic{width=75pt}{images/box.png}\Rightarrow
+      \pic{width=75pt}{images/erosion_example.png}\Rightarrow
+      \pic{width=75pt}{images/erodedbox.png}$$
+      Black \& Blue=Original image\\
        Blue=Remaining regions after erosion\\
        Red=Structuring element at one point during erosion
  
@@ -363,7 +351,8 @@ Woopsy daisy.
     \item This we can define already as a set.
           \begin{definition}
           For sets $A \in \mathbb{Z}^2$,
-                   $B = \tuple{B_1,B_2} \in \mathbb{Z}^2 \times \mathbb{Z}^2$,
+                   $B = \tuple{B_1,B_2} \in \power{\mathbb{Z}^2} \times 
+                                            \power{\mathbb{Z}^2}$,
           we define the \emph{hit-or-miss transformation} of 
           $A$ by $B$ as
           $$A \hitmiss B = \buildset{z \in \mathbb{Z}^2}
@@ -431,7 +420,7 @@ $\pic{width=75pt}{images/binarycoolhamblen.png}
 
 $
     \begin{array}{c|c|c|c|c|c}
-     X_1 & X_2 & X_3 & X_4 & X_4 \union A\\\hline
+     X_1 & X_2 & X_3 & X_4 & X_4 \union A\\\
      \pic{width=20pt}{images/triangles1.png}
      &\pic{width=20pt}{images/triangles2.png}
      &\pic{width=20pt}{images/triangles3.png}
@@ -455,7 +444,7 @@ $
    \pic{width=20pt}{images/shapes.png}$
 
    $\begin{array}{c|c|c|c|c|c}
-     X_1 & X_2 & X_3 & X_4 & X_5 & X_6\\\hline
+     X_1 & X_2 & X_3 & X_4 & X_5 & X_6\\\
      \pic{width=20pt}{images/shapes1.png}
      &\pic{width=20pt}{images/shapes2.png}
      &\pic{width=20pt}{images/shapes3.png}
@@ -572,7 +561,8 @@ $$\pic{width=50pt}{images/grayscale_tiles.png}
   \end{definition} 
   $$\pic{width=50pt}{images/coolhamblen_graydilated.png}-
     \pic{width=50pt}{images/coolhamblen_grayeroded.png}=
-    \pic{width=50pt}{images/coolhamblen_gradiented.png}$$
+    \pic{width=50pt}{images/coolhamblen_gradiented.png},
+    \pic{width=50pt}{images/coolhamblen_gradiented_inverted.png}$$
 \end{frame}
 
 
@@ -584,21 +574,11 @@ $$\pic{width=50pt}{images/grayscale_tiles.png}
   the space we defined them on.
 
   Would be nice to have a general framework for morphology on
-  unfamiliar territory, like...
-\end{frame}
-
-\begin{frame}{Penguin Morphology}
-  Dr. Hamblen asks me (nay, \emph{demands} me) to tell him how we can use morphology to talk about these penguins.
-
-  $$\substack{\pic{width=30pt}{images/tux.png}}
-    \substack{\pic{width=30pt}{images/tux.png}\\
-             \pic{width=30pt}{images/tux.png}}
-    \substack{\pic{width=30pt}{images/tux.png}\\
-              \pic{width=30pt}{images/tux.png}\\
-              \pic{width=30pt}{images/tux.png}\\
-              .\\.\\.}$$
+  unfamiliar territory, like how Matrices generalize into Vector Spaces.
   
+
 \end{frame}
+
 \subsection{The Hunt is on...}
 %Describing our basic necessities for generalized morphology
 \begin{frame}{What do we want?}
@@ -668,73 +648,109 @@ $$\pic{width=50pt}{images/grayscale_tiles.png}
   \end{itemize}
 \end{frame}
 
+\section{One Last Taste}
+\subsection{The Wild and Wacky World of $\integers^2$}
+%Introducing our taste of the world of $\integers^2$
+\begin{frame}{Formally looking at $\integers^2$}
+  As our original morphological tools operate on integer coordinates,
+  it'd be nice to figure out whether it can be trusted
+  to behave like $\mathbb{R}^2$.
 
-%Defining penguin stacks as a lattice
-\begin{frame}{Defining the Penguin Lattice}
-  We'll say for penguin stacks $s_1, s_2$, 
+  Spoiler: Kind of. 
+\end{frame}
 
-  $s_1 \partialless s_2 \iff $ the number of penguins in $s_1$ divides
-                               the number of penguins in $s_2$.
+\subsection{Jordan's Theorem}
+%Introducing Jordan's Theorem
+\begin{frame}{Jordan's Theorem}
+  $\pic{width=300pt}{images/jordans_theorem_r2.png}$
+\end{frame}
+
+%Stating Jordan's Theorem in R^2
+\begin{frame}{Jordan's Theorem in $\mathbb{R}^2$}
+
+\begin{block}{Theorem}
+  Let $C$ be a closed, polygonal path in $\mathbb{R}^2$.\\
+  Then $\mathbb{R}^2 \setminus C$ contains exactly 2 \underline{connected}
+  sets.
+  \begin{itemize}
+     \item One of the sets is bounded and called the \emph{interior, with 
+           respect to $C$}
+     \item One of the sets is unbounded and called the \emph{exterior,
+           with respect to $C$}.
+  \end{itemize}
+\end{block}
+\end{frame}
+
+%Movin to Z^2
+\begin{frame}{Jordan's Theorem in $\integers^2$}
+  Ok, so let's define this for $\integers^2$!
+
+  \pause
+
+  Wait...what does "connected" even mean in $\integers^2$?
+
+  Ah, poo.
+\end{frame}
+
+%Connectedness
+\begin{frame}{Connectivity in $\integers^2$}
+  We have at least two ways to define connectivity.
+  \begin{itemize}
+    \item 4-connectivity: $\pic{width=50pt}{images/4connectivity.png}$\horizline
+    \item 8-connectivity: $\pic{width=50pt}{images/8connectivity.png}$
+  \end{itemize} 
+\end{frame}
+
+%Now for why alone 4-connectivity and 8-connectivity don't work in Z^2
+\begin{frame}{Shoehorning Jordan's Theorem into $\integers^2$}
+  Alas, Jordan's Theorem doesn't hold in 4-connectivty or 8-connectivity
+  without an adequate amount of  jiggery-pokery (which is less than 
+  wunderbar).
+
+  \begin{itemize}
+    \item 4-connectivity: $\pic{width=50pt}{images/4connectivity_blunder1.png}$\horizline
+    \item 8-connectivity: $\pic{width=50pt}{images/8connectivity_blunder1.png}$
+  \end{itemize}
+\end{frame}
+
+%Using two connectivities to handle it
+\begin{frame}{Using Multiple Connectivity}
+ Using a single form of connectivity actually keeps us away from 
+ getting Jordan's Theorem back:
+ \begin{itemize}
+    \item 4-connectivity: $\pic{width=50pt}{images/4connectivity_blunder2.png}$\horizline
+    \item 8-connectivity: $\pic{width=50pt}{images/8connectivity_blunder2.png}$
+ \end{itemize}   
+\end{frame}
+
+%Digital Jordan's Curve
+\begin{frame}{The Digital Jordan's Theorem}
+\begin{block}{Theorem}
+  Let $k \in \set{4,8}$, and $\hat{k}\in \set{4,8}\setminus \set{k}$.
+
+  Let $C$ be a simple, closed $k$-path in $\integers^2$.
   
-  $$\substack{\penguin{20pt}\\\penguin{20pt}}
-    \partialless
-    \substack{\penguin{20pt}\\\penguin{20pt}\\
-              \penguin{20pt}\\\penguin{20pt}}$$
+  Then $\integers^2$ contains exactly 2 $\hat{k}$-connected sets.
+  \begin{itemize}
+    \item One of the sets is bounded and called the interior, with
+          respect to $C$.
+    \item One of the sets is unbounded and called the exterior, with
+          respect to $C$.
+  \end{itemize}
+\end{block}
 \end{frame}
 
-%Observing the supremum of a penguin stack
-\begin{frame}{Supremal Penguin Stacks}
-  This give us that the supremum of penguin stacks is the least
-  common multiple of the stacks.
-
-  Let $P = \set{\substack{\penguin{10pt}\\\penguin{10pt}},
-                \substack{\penguin{10pt}\\\penguin{10pt}\\
-                          \penguin{10pt}\\}}$
-  $\join{p\in P}p = \substack{\penguin{10pt}\\\penguin{10pt}\\
-                        \penguin{10pt}\\\penguin{10pt}\\
-                        \penguin{10pt}\\\penguin{10pt}}$
-
-   Consequently, our greatest stack is in fact the empty stack!
+%Summary of how flappin' weird integers can be.
+\begin{frame}{Denouement}
+So here's what we have:
+\begin{itemize}
+  \item $\integers^2$ is a surprisingly non-trivial (and mildly scary)
+        place to work.
+  \item Morphology gives us tools to navigate $\integers^2$ and other 
+        potentially scary spaces.
+\end{itemize}
+   
 \end{frame}
-
-%Observing the infimum of a penguin stack
-\begin{frame}{Infimal Penguin Stack}
-And the infimum of penguin stacks is the greatest common divisor of 
-the stacks.
-$$\meet{p \in P}p = \substack{\penguin{10pt}}$$
-Our least element will be a solo penguin.
-\end{frame}
-
-%Defining dilation 
-\begin{frame}{$\dilate$ Dilation}
-  \begin{definition}
-    For penguin stacks $p$ and $b$, we define the \emph{dilation}
-    of $p$ by $b$ as the penguin stack whose size is equal to 
-    the greatest common divisor of the stacks $p$ and $b$.
-  \end{definition}
-  $$\substack{\penguin{10pt}} \dilate \substack{\penguin{10pt}\\
-                                                \penguin{10pt}}
-    = \substack{\penguin{10pt}}$$
-\end{frame}
-
-
-%Defining penguin stack erosion 
-\begin{frame}{$\erode$ Erosion}
-  \begin{definition}
-    For penguin stacks $p$ and $b$, we define the \emph{erosion}
-    of $p$ by $b$ as the penguin stack whose size is equal to 
-    the least common multiple of the stacks $p$ and $b$.
-  \end{definition}
-  $$\substack{\penguin{10pt}} \erode \substack{\penguin{10pt}\\
-                                                \penguin{10pt}}
-    = \substack{\penguin{10pt}\\\penguin{10pt}}$$
-
-\end{frame}
-
-%Applying Penguin Morphology
-%%\begin{frame}{Applications of Penguin Morphology:}
-%%  Want to know if your penguin stack has a multiple of  
-%%\end{frame}
 
 \section{End}
 \subsection{We made it!}
@@ -742,6 +758,7 @@ Our least element will be a solo penguin.
 \begin{frame}{Thank you for listening!}
 
 Any questions?
-
 \end{frame}
+
 \end{document}
+
