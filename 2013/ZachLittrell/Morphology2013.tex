@@ -78,7 +78,7 @@ $\pic{width=100pt}{./images/matheron.jpg}
           was founded, for the further development of Mathematical Morphology.
           $$\pic{width=100pt}{images/cmm.png}
             \pic{width=100pt}{images/directions.png}$$
-          \item They have ~10 patents on MM-related technology,
+          \item They have \textasciitilde 10 patents on MM-related technology,
                 and continue to research the topic.
   \end{itemize}
 \end{frame}
@@ -412,7 +412,7 @@ $\pic{width=75pt}{images/binarycoolhamblen.png}
 \begin{frame}{A Gaggle of Binary Morpophological Functions:\\
               Region Filling:}
   We can fill up a region using the following recursive equation:
-  $$X_k=(X_{k-1}\dilate B)-A$$
+  $$X_k=(X_{k-1}\dilate B)\setminus A$$
   where $X_0 = \set{p}$, for some point $p$ in the region to be filled.
 
   So, let's fill up the top triangle in this image: 
@@ -579,7 +579,6 @@ $$\pic{width=50pt}{images/grayscale_tiles.png}
 
 \end{frame}
 
-\subsection{The Hunt is on...}
 %Describing our basic necessities for generalized morphology
 \begin{frame}{What do we want?}
   Things we need:
@@ -659,9 +658,9 @@ $$\pic{width=50pt}{images/grayscale_tiles.png}
   Spoiler: Kind of. 
 \end{frame}
 
-\subsection{Jordan's Curve Theorem}
+\subsection{Jordan's Theorem}
 %Introducing Jordan's Theorem
-\begin{frame}{Jordan's Theorem}
+\begin{frame}{Jordan's Curve Theorem}
   $\pic{width=300pt}{images/jordans_theorem_r2.png}$
 \end{frame}
 
@@ -683,7 +682,7 @@ $$\pic{width=50pt}{images/grayscale_tiles.png}
 
 %Movin to Z^2
 \begin{frame}{Jordan's Theorem in $\integers^2$}
-  Ok, so let's define this for $\integers^2$!
+  Ok, so let's check this out in $\integers^2$!
 
   \pause
 
