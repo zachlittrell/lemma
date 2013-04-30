@@ -170,7 +170,7 @@ $\pic{width=100pt}{./images/coolhamblen.png}
 \end{frame}
 %And now translation
 \begin{frame}{A Gaggle of Set Operators: Translation}
-  For set $A \subseteq \mathbb{Z}^2$, and $\tuple{a,b} \in \mathbb{Z}^2$
+  For set $A \subseteq \mathbb{Z}^2$, and $z=\tuple{a,b} \in \mathbb{Z}^2$
 
 
     $$A+z = \buildset{\tuple{x+a,y+b}}
@@ -217,7 +217,7 @@ $\pic{width=100pt}{./images/coolhamblen.png}
 
 \begin{frame}{$\dilate$ Dilation: The Set Version}
   \begin{definition}
-    For binary sets $A$ and $B$, we define the \emph{dilation} of $A$ by $B$
+    For $A,B \subseteq \integers^2$, we define the \emph{dilation} of $A$ by $B$
     to be:
     $$A \dilate B = \buildset{z \in \mathbb{Z}^2}
                              {-B+z \intersect A \not= \emptyset}$$
@@ -239,7 +239,7 @@ $\pic{width=100pt}{./images/coolhamblen.png}
 
 \begin{frame}{$\erode$ Erosion: The Set Version}
    \begin{definition}
-    For binary sets $A$ and $B$, we define the \emph{erosion} of 
+    For $A,B \subseteq \integers^2$, we define the \emph{erosion} of 
     $A$ by $B$ to be:
     $$A \erode B=\buildset{z \in \mathbb{Z}^2}{B+z \subseteq A}$$
   \end{definition}
@@ -350,7 +350,7 @@ Woopsy daisy.
   \begin{itemize}
     \item This we can define already as a set.
           \begin{definition}
-          For sets $A \in \mathbb{Z}^2$,
+          For sets $A \subseteq \mathbb{Z}^2$,
                    $B = \tuple{B_1,B_2} \in \power{\mathbb{Z}^2} \times 
                                             \power{\mathbb{Z}^2}$,
           we define the \emph{hit-or-miss transformation} of 
@@ -507,8 +507,8 @@ $
 \begin{frame}{$\dilate$ Dilation}
 \begin{definition}
   For functions $f,b: \mathbb{Z}\times\mathbb{Z}\rightarrow [0,1]$,
-  we define the $dilation$ of $A$ by $B$ as
-  $$(A \dilate B)(x,y) = \displaystyle\sup_{\tuple{x',y'} \in \integers^2}
+  we define the $dilation$ of $f$ by $b$ as
+  $$(f \dilate b)(x,y) = \displaystyle\sup_{\tuple{x',y'} \in \integers^2}
                                       \set{f(x-x',y-y') + b(x',y')}$$
 \end{definition}
   $$\pic{width=50pt}{images/grayscale_tiles.png}
@@ -530,8 +530,8 @@ $
 \begin{frame}{$\erode$ Erosion}
 \begin{definition}
   For functions $f,b: \mathbb{Z}\times\mathbb{Z}\rightarrow [0,1]$,
-  we define the $erosion$ of $A$ by $B$ as
-  $$(A \erode B)(x,y) = \displaystyle\inf_{\tuple{x',y'} \in \mathbb{Z}}
+  we define the $erosion$ of $f$ by $b$ as
+  $$(f \erode b)(x,y) = \displaystyle\inf_{\tuple{x',y'} \in \mathbb{Z}}
                                       \set{f(x+x',y+y') - b(x',y')}$$
 \end{definition}
 $$\pic{width=50pt}{images/grayscale_tiles.png}
@@ -609,7 +609,7 @@ $$\pic{width=50pt}{images/grayscale_tiles.png}
      Let $\func{\unidilate}{L}{L}$ be a function such that
        $$\join{i} \unidilate(X_i) = 
          \unidilate\left(\join{i}X_i\right)$$
-     and the dilation of the least element is the least element.
+     and the value of the least element is the least element.
 
 
      We call $\unidilate$ a \emph{dilation}.
@@ -625,7 +625,7 @@ $$\pic{width=50pt}{images/grayscale_tiles.png}
        $$\meet{i} \unierode(X_i) = 
          \unierode\left(\meet{i}X_i\right)$$
 
-     and the erosion of the max element is the max element.
+     and the value of the max element is the max element.
 
      We call $\unierode$ an \emph{erosion}.
    \end{definition}
@@ -652,14 +652,14 @@ $$\pic{width=50pt}{images/grayscale_tiles.png}
 \subsection{The Wild and Wacky World of $\integers^2$}
 %Introducing our taste of the world of $\integers^2$
 \begin{frame}{Formally looking at $\integers^2$}
-  As our original morphological tools operate on integer coordinates,
-  it'd be nice to figure out whether it can be trusted
+  As our original morphological tools operate on $\integers^2$,
+  it'd be nice to figure out whether $\integers^2$ can be trusted
   to behave like $\mathbb{R}^2$.
 
   Spoiler: Kind of. 
 \end{frame}
 
-\subsection{Jordan's Theorem}
+\subsection{Jordan's Curve Theorem}
 %Introducing Jordan's Theorem
 \begin{frame}{Jordan's Theorem}
   $\pic{width=300pt}{images/jordans_theorem_r2.png}$
@@ -669,7 +669,7 @@ $$\pic{width=50pt}{images/grayscale_tiles.png}
 \begin{frame}{Jordan's Theorem in $\mathbb{R}^2$}
 
 \begin{block}{Theorem}
-  Let $C$ be a closed, polygonal path in $\mathbb{R}^2$.\\
+  Let $C$ be a closed, simple path in $\mathbb{R}^2$.\\
   Then $\mathbb{R}^2 \setminus C$ contains exactly 2 \underline{connected}
   sets.
   \begin{itemize}
