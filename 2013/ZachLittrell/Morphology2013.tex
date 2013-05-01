@@ -91,7 +91,7 @@ $\pic{width=100pt}{./images/matheron.jpg}
 %%     \item 
 %%  \end{itemize}
 %%\end{frame}
-
+\subsection{In A Nutshell}
 %Nutshell!
 \begin{frame}{Mathematical Morphology: Nutshell Edition}
   When in Mathematical Morphology, we...
@@ -506,7 +506,7 @@ $
 %Defining dilation in terms of functions
 \begin{frame}{$\dilate$ Dilation}
 \begin{definition}
-  For functions $f,b: \mathbb{Z}\times\mathbb{Z}\rightarrow [0,1]$,
+  For functions $f,b: \mathbb{Z}\times\mathbb{Z}\rightarrow [-\infty,\infty]$,
   we define the $dilation$ of $f$ by $b$ as
   $$(f \dilate b)(x,y) = \displaystyle\sup_{\tuple{x',y'} \in \integers^2}
                                       \set{f(x-x',y-y') + b(x',y')}$$
@@ -529,7 +529,7 @@ $
 %Defining Erosion
 \begin{frame}{$\erode$ Erosion}
 \begin{definition}
-  For functions $f,b: \mathbb{Z}\times\mathbb{Z}\rightarrow [0,1]$,
+  For functions $f,b: \mathbb{Z}\times\mathbb{Z}\rightarrow [-\infty,\infty]$,
   we define the $erosion$ of $f$ by $b$ as
   $$(f \erode b)(x,y) = \displaystyle\inf_{\tuple{x',y'} \in \mathbb{Z}}
                                       \set{f(x+x',y+y') - b(x',y')}$$
